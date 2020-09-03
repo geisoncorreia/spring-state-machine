@@ -1,7 +1,7 @@
 package com.br.msscssm.config;
 
-import com.br.msscssm.domain.RegrasListarMeioEvent;
-import com.br.msscssm.domain.RegrasListarMeioStatus;
+import com.br.msscssm.domain.EnumEvent;
+import com.br.msscssm.domain.EnumStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,25 +14,25 @@ import java.util.UUID;
 class StateMachineConfigTest {
 
     @Autowired
-    StateMachineFactory<RegrasListarMeioStatus, RegrasListarMeioEvent> factory;
+    StateMachineFactory<EnumStatus, EnumEvent> factory;
 
     @Test
     void testNewStateMachine() {
-        StateMachine<RegrasListarMeioStatus, RegrasListarMeioEvent> sm = factory.getStateMachine(UUID.randomUUID());
+        StateMachine<EnumStatus, EnumEvent> sm = factory.getStateMachine(UUID.randomUUID());
 
         sm.start();
 
         System.out.println(sm.getState().toString());
 
-        sm.sendEvent(RegrasListarMeioEvent.SETUP);
+        sm.sendEvent(EnumEvent.SETUP);
 
         System.out.println(sm.getState().toString());
 
-        sm.sendEvent(RegrasListarMeioEvent.VALIDATE);
+        sm.sendEvent(EnumEvent.VALIDATE);
 
         System.out.println(sm.getState().toString());
 
-        sm.sendEvent(RegrasListarMeioEvent.PROCESS);
+        sm.sendEvent(EnumEvent.PROCESS);
 
         System.out.println(sm.getState().toString());
 

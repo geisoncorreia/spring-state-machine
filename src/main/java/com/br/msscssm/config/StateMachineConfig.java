@@ -1,9 +1,7 @@
 package com.br.msscssm.config;
 
-import com.br.msscssm.domain.Proposta;
-import com.br.msscssm.domain.RegrasListarMeioStatus;
-import com.br.msscssm.domain.RegrasListarMeioEvent;
-import com.br.msscssm.domain.action.PropostaAction;
+import com.br.msscssm.domain.EnumStatus;
+import com.br.msscssm.domain.EnumEvent;
 import com.br.msscssm.repository.PropostaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,59 +18,54 @@ import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 import org.springframework.statemachine.state.State;
 
 import java.util.EnumSet;
-import java.util.Optional;
-import java.util.UUID;
 
-/**
- * Created by jt on 2019-07-23.
- */
 @Slf4j
 @EnableStateMachineFactory
 @Configuration
 @RequiredArgsConstructor
-public class StateMachineConfig extends StateMachineConfigurerAdapter<RegrasListarMeioStatus, RegrasListarMeioEvent> {
+public class StateMachineConfig extends StateMachineConfigurerAdapter<EnumStatus, EnumEvent> {
 
     private PropostaRepository propostaRepository;
 
     @Override
-    public void configure(StateMachineStateConfigurer<RegrasListarMeioStatus, RegrasListarMeioEvent> states) throws Exception {
+    public void configure(StateMachineStateConfigurer<EnumStatus, EnumEvent> states) throws Exception {
         states.withStates()
-                .initial(RegrasListarMeioStatus.SETUP, teste(states))
-                .states(EnumSet.allOf(RegrasListarMeioStatus.class))
-                .end(RegrasListarMeioStatus.VALIDATE)
-                .end(RegrasListarMeioStatus.PROCESS);
+                .initial(EnumStatus.SETUP, teste(states))
+                .states(EnumSet.allOf(EnumStatus.class))
+                .end(EnumStatus.VALIDATE)
+                .end(EnumStatus.PROCESS);
     }
 
-    private Action<RegrasListarMeioStatus, RegrasListarMeioEvent> teste(StateMachineStateConfigurer<RegrasListarMeioStatus, RegrasListarMeioEvent> states) {
+    private Action<EnumStatus, EnumEvent> teste(StateMachineStateConfigurer<EnumStatus, EnumEvent> states) {
 
         /*final UUID uuid = UUID.randomUUID();
         final var proposta = propostaRepository.findById(uuid);*/
-        String msn = "teste: " + RegrasListarMeioStatus.SETUP;
+        String msn = "teste: " + EnumStatus.SETUP;
         return context -> System.out.println(msn);
     }
 
     @Override
-    public void configure(StateMachineTransitionConfigurer<RegrasListarMeioStatus, RegrasListarMeioEvent> transitions) throws Exception {
-        transitions.withExternal().source(RegrasListarMeioStatus.SETUP)
-                .target(RegrasListarMeioStatus.VALIDATE)
-                .event(RegrasListarMeioEvent.VALIDATE)
+    public void configure(StateMachineTransitionConfigurer<EnumStatus, EnumEvent> transitions) throws Exception {
+        transitions.withExternal().source(EnumStatus.SETUP)
+                .target(EnumStatus.VALIDATE)
+                .event(EnumEvent.VALIDATE)
                 .action(action1())
                 .and()
-                .withExternal().source(RegrasListarMeioStatus.VALIDATE)
-                .target(RegrasListarMeioStatus.PROCESS)
+                .withExternal().source(EnumStatus.VALIDATE)
+                .target(EnumStatus.PROCESS)
                 .action(teste2(transitions));
     }
 
-    private Action<RegrasListarMeioStatus, RegrasListarMeioEvent> teste2(StateMachineTransitionConfigurer<RegrasListarMeioStatus, RegrasListarMeioEvent> transitions) {
-        String msn = "teste" + RegrasListarMeioStatus.PROCESS;
+    private Action<EnumStatus, EnumEvent> teste2(StateMachineTransitionConfigurer<EnumStatus, EnumEvent> transitions) {
+        String msn = "teste" + EnumStatus.PROCESS;
         return context -> System.out.println(msn);
     }
 
     @Override
-    public void configure(StateMachineConfigurationConfigurer<RegrasListarMeioStatus, RegrasListarMeioEvent> config) throws Exception {
-        StateMachineListenerAdapter<RegrasListarMeioStatus, RegrasListarMeioEvent> adapter = new StateMachineListenerAdapter<>(){
+    public void configure(StateMachineConfigurationConfigurer<EnumStatus, EnumEvent> config) throws Exception {
+        StateMachineListenerAdapter<EnumStatus, EnumEvent> adapter = new StateMachineListenerAdapter<>(){
             @Override
-            public void stateChanged(State<RegrasListarMeioStatus, RegrasListarMeioEvent> from, State<RegrasListarMeioStatus, RegrasListarMeioEvent> to) {
+            public void stateChanged(State<EnumStatus, EnumEvent> from, State<EnumStatus, EnumEvent> to) {
                 log.info(String.format("stateChanged(from: %s, to: %s)", from, to));
             }
         };
@@ -82,11 +75,11 @@ public class StateMachineConfig extends StateMachineConfigurerAdapter<RegrasList
     }
 
     @Bean
-    public Action<RegrasListarMeioStatus, RegrasListarMeioEvent> action1() {
-        return new Action<RegrasListarMeioStatus, RegrasListarMeioEvent>() {
+    public Action<EnumStatus, EnumEvent> action1() {
+        return new Action<EnumStatus, EnumEvent>() {
 
             @Override
-            public void execute(StateContext<RegrasListarMeioStatus, RegrasListarMeioEvent> context) {
+            public void execute(StateContext<EnumStatus, EnumEvent> context) {
                 System.out.println("Teste Ação: " + context.getEvent());
             }
         };

@@ -1,5 +1,5 @@
 package com.br.msscssm.domain;
 
-public enum RegrasListarMeioStatus {
+public enum EnumStatus {
     SETUP, VALIDATE, PROCESS
 }
